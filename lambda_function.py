@@ -1,4 +1,3 @@
-
 import boto3
 import json
 import logging
@@ -14,7 +13,7 @@ logger.setLevel(logging.INFO)
 cloudwatch = boto3.client('cloudwatch')
 
 # A lambda that takes an SNS event
-# then publishes cool username metrics
+# then publishes cool playlist metrics
 # with respect to each type of API call.
 def lambda_handler(event, context):
     
@@ -26,32 +25,42 @@ def lambda_handler(event, context):
     ##### Message parsing
     logger.info("Trying to parse message for request...")
     try:
-        type_of_request = message['request_type'] # TODO: this should be GET, POST, PATCH, etc.
-        first_letter_of_username = message['username'][0] # TODO: probably the user's email, we may need to some parsing there
-        last_letter_of_username = message['username'][-1]
-        length_of_username = len(message['username'])
+        type_of_request = message['request_type']
+        first_letter_of_playlist = message['name'][0]
+        last_letter_of_playlist = message['name'][-1]
+        length_of_playlist = len(message['name'])
+        first_num_of_id = message['id'][0]
+        last_num_of_id = message['id'][-1]
         metric_data = [
             {
                 'MetricName': type_of_request + " Request",
                 'Dimensions': [
                     {
-                        'Name': 'First letter of username',
-                        'Value': first_letter_of_username
+                        'Name': 'First letter of playlist name',
+                        'Value': first_letter_of_playlist
                     },
                     {
-                        'Name': 'Last letter of username',
-                        'Value': last_letter_of_username
+                        'Name': 'Last letter of playlist name',
+                        'Value': last_letter_of_playlist
                     },
                     {
-                        'Name': 'Length of username',
-                        'Value': str(length_of_username)
+                        'Name': 'Length of playlist name',
+                        'Value': str(length_of_playlist)
+                    },
+                    {
+                        'Name': 'First number of playlist id',
+                        'Value': str(first_num_of_id)
+                    },
+                    {
+                        'Name': 'Last number of playlist id',
+                        'Value': str(last_num_of_id)
                     }
                     ],
                     'Unit': 'Count',
                     'Value': 1
             }
         ]
-        namespace = 'ProPlaylistUsernameMetrics'
+        namespace = 'ProPlaylistPlaylistMetrics'
         logger.info("Message parse success.")
     except Exception as ex:
         logger.error("Could not parse the message.")

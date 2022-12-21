@@ -29,8 +29,8 @@ def lambda_handler(event, context):
         first_letter_of_playlist = message['name'][0]
         last_letter_of_playlist = message['name'][-1]
         length_of_playlist = len(message['name'])
-        first_num_of_id = message['id'][0]
-        last_num_of_id = message['id'][-1]
+        first_num_of_id = str(message['id'])[0]
+        last_num_of_id = str(message['id'])[-1]
         metric_data = [
             {
                 'MetricName': type_of_request + " Request",
